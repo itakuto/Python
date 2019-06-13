@@ -11,7 +11,7 @@ df_wine_all = pd.read_csv('https://archive.ics.uci.edu/ml/machine-learning-datab
 # 品種(0列、1～3)と色（10列）とプロリンの量(13列)を使用する
 df_wine = df_wine_all[[0, 10, 13]]
 df_wine.columns = [u'class', u'color', u'proline']
-pd.DataFrame(df_wine)  # この行を実行するとデータが見れる
+print(pd.DataFrame(df_wine)) # この行を実行するとデータが見れる
 
 # 解説 3：プロットしてみる------------------------------------------------------
 
@@ -39,6 +39,7 @@ print("正解率の標準偏差 = ", scores.std())
 # 解説 7：トレーニングデータとテストデータに分けて実行してみる------------------
 X_train, X_test, train_label, test_label = train_test_split(X_std, z, test_size=0.1, random_state=0)
 clf_result.fit(X_train, train_label)
+
 # 正答率を求める
 pre = clf_result.predict(X_test)
 ac_score = metrics.accuracy_score(test_label, pre)
@@ -58,5 +59,18 @@ plt.show()
 #print("このテストデータのラベル = ", predicted_label)
 
 # 解説 9：識別平面の式を手に入れる--------------------------------
-print(clf_result.intercept_)
-print(clf_result.coef_)  # coef[0]*x+coef[1]*y+intercept=0
+print("切片",clf_result.intercept_)
+print("係数",clf_result.coef_)  # coef[0]*x+coef[1]*y+intercept=0
+
+#解説10：クラス未知データのクラスを予測をしてみる
+unknown_data=[[1,200]]
+unknown_data=sc.transform(unknown_data)
+Pre=clf_result.predict(unknown_data)
+print("正規化未知データ",unknown_data)
+print("予測結果",Pre)
+unknownX=unknown_data[0,0]
+unknownY=unknown_data[0,1]
+plot_decision_regions(X_test_plot, test_label_plot, clf=clf_result, res=0.01, legend=2)
+plt.scatter(unknownX,unknownY,c='yellow',marker='*')
+plt.title("PredictLocation")
+plt.show()
